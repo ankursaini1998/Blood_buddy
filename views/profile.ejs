@@ -1,0 +1,16 @@
+<% include partials/header %>
+<a href="/edit">Edit Profile</a>
+<h1><%= donor.name %></h1>
+<ul>
+    <li><%= donor.local.username %></li>
+    <li><%= donor.email %></li>
+    <li><%= donor.contactNumber%></li>
+    <li><%= donor.address %></li>
+    <li><%= donor.bloodGroup %></li>
+    <li><%= donor.gender%></li>
+    <li><%= donor.dob %></li>
+    <li><%= donor.city%></li>
+    <li><%= donor.dateOfLastDonation %></li>
+</ul>
+
+<% include partials/footer %>
