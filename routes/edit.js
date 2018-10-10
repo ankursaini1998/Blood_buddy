@@ -34,7 +34,8 @@ router.post('/',function(req,res){
     donor.findByIdAndUpdate(req.user._id,{$set: updatedDonor}, {upsert:true}, function(err, updated){
         if (err) console.log(err);
         //check - console.log(updated);
-        res.render('profile',{donor : updatedDonor});
+        req.flash('success','Updated Successfully!');
+        res.redirect('/profile');
     });
 
 });

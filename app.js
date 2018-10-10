@@ -5,11 +5,12 @@ var express               = require('express'),
     bodyParser            = require('body-parser'),
     passport              = require('passport'),
     LocalStrategy         = require("passport-local").Strategy,
-    session               = require("express-session"),
-    donor                 = require('./models/donor.js'),
+    cookieParser          = require("cookie-parser"),
+    session               = require('express-session'),
     flash                 = require('connect-flash'),
-    methodOverride        = require("method-override"),
+    donor                 = require('./models/donor.js'),
     middleware            = require('./middleware/index');
+    require('./config/passport')(passport);
 
 //Requiring routes
 var authRoutes    = require("./routes/auth"),
@@ -21,28 +22,29 @@ mongoose.connect('mongodb://bloob_buddy:blood123@ds223653.mlab.com:23653/blood_b
 
 //Configuration
 app.set('view engine','ejs');
-app.use(bodyParser.urlencoded({extended:false}));
-app.use(require("express-session")({
-    secret : "secret page",
-    resave : false,
-    saveUninitialized : false
+app.use(bodyParser.urlencoded({extended:false})); 
+app.use(cookieParser());
+app.use(session({
+    secret: 'asecretmessage',
+    resave: false,
+    saveUninitialized: false
 }));
-app.use(methodOverride('_method'));
+app.use(flash());
+
 //Passport Configuration
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(function(req, res, next){
     res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     next();
-    });
-
+});
 
 app.use("/auth", authRoutes);
 app.use("/search", searchRoutes);
 app.use("/edit", editRoutes);
-
-
 
 //ROUTES
 app.get('/',function(req,res){
