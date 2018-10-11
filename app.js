@@ -22,6 +22,8 @@ mongoose.connect('mongodb://bloob_buddy:blood123@ds223653.mlab.com:23653/blood_b
 
 //Configuration
 app.set('view engine','ejs');
+app.use(express.static(__dirname + "/views"));
+app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended:false})); 
 app.use(cookieParser());
 app.use(session({
@@ -58,6 +60,29 @@ app.get('/home',function(req,res){
 app.get('/profile',middleware.isLoggedIn,function(req,res){
     res.render('profile',{donor : req.user});
 });
+app.post("/home/usernameTest",function(req,res){
+    var query= donor.findOne({"local.username":req.body.username});
+ query.select("local.username");
+ query.exec(function (err, person) {
+   if (err) return handleError(err);     
+   if(person ==null)
+   res.send({"username":"-1"});
+   else res.send({"username":person.local.username});
+});
+});
+
+
+app.post("/home/emailTest",function(req,res){
+  var query= donor.findOne({"email":req.body.email});
+query.select("email");
+query.exec(function (err, person) {
+ if (err) return handleError(err);     
+ if(person ==null)
+ res.send({"email":"-1"});
+ else res.send({"email":person.email});
+});
+});
+
 
 app.listen('8080',function(){
     console.log('Server Started');

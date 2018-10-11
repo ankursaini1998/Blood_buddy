@@ -3,10 +3,12 @@ var express        = require("express"),
     passport       = require("passport"),
     donor          = require("../models/donor"),
     LocalStrategy  = require("passport-local").Strategy,
-    request        = require("request");
+    request        = require("request"),
+    bodyParser     = require('body-parser');
 
 require('../config/passport')(passport);
 
+router.use(bodyParser.urlencoded({extended:false})); 
 router.use(function(req, res, next){
     res.locals.currentUser = req.user;
     res.locals.success     = req.flash('success');
