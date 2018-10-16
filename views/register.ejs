@@ -4,7 +4,7 @@
 	<h1>Donor Registration</h1>
     <div class="row">
  
-	<form id="form" action="/auth/register" method="POST">
+	<form action="/auth/register" id ="form" method="POST">
 		<div class="form-group">
 		<label>
 			Name<br>
@@ -12,12 +12,12 @@
         </label>
         <label>
 			Username<br>
-		    <input type ="text" id ="username" class="form-control" name ="username" required>
+		    <input type ="text" id="username" class="form-control" name ="username" required>
 		</label>
 	  
 		<label>
 		    Email<br>
-            <input type="email"  id="email" class="form-control" name ="email"  required>
+            <input type="email" id="email"class="form-control" name ="email"  required>
 	    </label>
 	    </div>
 
@@ -97,7 +97,15 @@
 	    <label>
 		    Address<br>
             <textarea class="form-control" name="address"></textarea>
-	    </label>
+		</label>
+		<div class="form-group">
+			<label>
+				UserType<br>
+
+				<input type="text" class="form-control" name="userType" value="Donor" readonly required  >		
+				
+			</label>
+			</div>
 	    </div>
 	    
 

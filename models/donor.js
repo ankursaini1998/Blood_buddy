@@ -8,6 +8,13 @@ var donorSchema = mongoose.Schema({
             username : String,
             password : String,
         },
+        facebook: 
+        {
+            id           : String,
+            token        : String,
+            name         : String,
+            email        : String
+        },
         name : String,
         email : String,
         confirmPassword : String,
@@ -17,7 +24,8 @@ var donorSchema = mongoose.Schema({
         dateOfLastDonation : Date,
         city : String,
         contactNumber : String,
-        address : String
+        address : String,
+        userType : String
 });
 
 //Hashing Password
@@ -30,4 +38,5 @@ donorSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.local.password);
 };
 
+donorSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model('donor', donorSchema);

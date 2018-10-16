@@ -1,0 +1,14 @@
+<% include partials/header %>
+<a href="/editHospital">Edit Profile</a>
+<div class = container>
+<h1><%= hospital.name %></h1>
+<ul>
+    <li>Username : <%= hospital.local.username %></li>
+    <li>Email :  <%= hospital.email %></li>
+    <li>Contact : <%= hospital.contactNumber%></li>
+    <li>Address : <%= hospital.address %></li>
+    <li>City : <%= hospital.city%></li>
+</ul>
+</div>
+
+<% include partials/footer %>

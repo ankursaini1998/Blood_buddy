@@ -1,16 +1,18 @@
 <% include partials/header %>
 <a href="/edit">Edit Profile</a>
+<div class = container >
 <h1><%= donor.name %></h1>
 <ul>
-    <li><%= donor.local.username %></li>
-    <li><%= donor.email %></li>
-    <li><%= donor.contactNumber%></li>
-    <li><%= donor.address %></li>
-    <li><%= donor.bloodGroup %></li>
-    <li><%= donor.gender%></li>
-    <li><%= donor.dob %></li>
-    <li><%= donor.city%></li>
-    <li><%= donor.dateOfLastDonation %></li>
+    <li>Username      : <%= donor.local.username %></li>
+    <li>Email         : <%= donor.email %></li>
+    <li>Contact       : <%= donor.contactNumber%></li>
+    <li>Address       : <%= donor.address %></li>
+    <li>Blood Group   : <%= donor.bloodGroup %></li>
+    <li>Gender        : <%= donor.gender%></li>
+    <li>D.O.B.        : <%= donor.dob %></li>
+    <li>City          : <%= donor.city%></li>
+    <li>Last donation : <%= donor.dateOfLastDonation %></li>
 </ul>
+</div>
 
 <% include partials/footer %>

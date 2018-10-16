@@ -1,9 +1,41 @@
 var LocalStrategy   = require('passport-local').Strategy,
+    FacebookStrategy = require('passport-facebook').Strategy,
     donor           = require('../models/donor'),
-    flash           = require('connect-flash');
+    hospital        = require('../models/hospital'),
+    flash           = require('connect-flash'),
+    configAuth = require('./auth');
 
 module.exports = function(passport) {
+//Serializing User for the session
+passport.serializeUser(function(user, done) {             
     
+     if(user.userType==="Donor")
+     {
+         var key1="a"+user.id;
+         done(null,key1);
+     }
+     else if(user.userType==="Hospital")
+     done(null,"b"+user.id);
+ });
+
+//Deserializing User
+passport.deserializeUser(function(key, done) {
+    if(key.charAt(0)==="a")
+    {
+        key1=key.substr(1);
+        donor.findById(key1,(err,donors)=>{
+            done(err,donors);
+        })
+    }
+    else if(key.charAt(0)==="b")
+    {
+        key1=key.substr(1);
+        hospital.findById(key1,(err,hospitals)=>{
+            done(err,hospitals);
+        })
+    }
+});   
+
 //Local Strategy for Register
 passport.use('local-signup', new LocalStrategy({passReqToCallback : true},function(req, username, password, done){
     process.nextTick(function() {
@@ -17,6 +49,7 @@ passport.use('local-signup', new LocalStrategy({passReqToCallback : true},functi
         else
         {
             var newDonor  = new donor();
+            donor.collection.dropIndex({"username":1});   
             newDonor.local.username    = username;
             newDonor.local.password = newDonor.generateHash(password);
             newDonor.name = req.body.name;
@@ -29,6 +62,7 @@ passport.use('local-signup', new LocalStrategy({passReqToCallback : true},functi
             newDonor.city = req.body.city;
             newDonor.contactNumber = req.body.contactNumber;
             newDonor.address = req.body.address;
+            newDonor.userType= req.body.userType;
 
             newDonor.save(function(err,created){
                 if (err)
@@ -40,6 +74,41 @@ passport.use('local-signup', new LocalStrategy({passReqToCallback : true},functi
         }
     });    
 });
+}));
+//Local Strategy for Register Hospitals
+passport.use('local-signup-hospital', new LocalStrategy({ passReqToCallback: true }, function (req, username, password, done) {
+    process.nextTick(function () {
+        hospital.findOne({ 'local.username': username }, function (err, user) {
+            if (err)
+                return done(err);
+            if (user) {
+                console.log("User exists already");
+                return done(null, false);
+            }
+            else {
+                var newHospital = new hospital();
+                // newHospital._id= req.body._id;
+                hospital.collection.dropIndex({"username":1});                      
+                newHospital.local.username = username;
+                newHospital.local.password = newHospital.generateHash(password);
+                newHospital.name = req.body.name;
+                newHospital.email = req.body.email;
+                newHospital.confirmPassword = req.body.confirmPassword;
+                newHospital.city = req.body.city;
+                newHospital.contactNumber = req.body.contactNumber;
+                newHospital.address = req.body.address;
+                newHospital.userType= req.body.userType;                            
+
+                newHospital.save(function (err, created) {
+                    if (err)
+                        throw err;
+                    console.log("Registered Successfully!");
+                    console.log("Welcome  " + created.name);
+                    return done(null, newHospital);
+                });
+            }
+        });
+    });
 }));
 
 //Local Strategy for Login
@@ -62,15 +131,66 @@ donor.findOne({ 'local.username':username },function(err,donor){
 });
 }));
 
-//Serializing User for the session
-passport.serializeUser(function(donor, done) {
-    done(null, donor.id);
-});
+passport.use('local-login-hospital', new LocalStrategy({ passReqToCallback: true }, function (req, username, password, done) {
+    hospital.findOne({ 'local.username': username }, function (err, hospital) {
+        if (err)
+            return done(err);
 
-//Deserializing User
-passport.deserializeUser(function(id, done) {
-    donor.findById(id, function(err, donor) {
-        done(err, donor);
+        if (!hospital) {
+            console.log("Wrong Username!");
+            return done(null, false,req.flash("error", 'User does not exist.'));
+        }
+        if (!hospital.validPassword(password)) {
+            console.log("Wrong Password!");
+            return done(null, false, req.flash("error", 'Oops! Wrong password.'));
+        }
+        console.log("Logged in Successfully!");
+        console.log("Welcome  " + hospital.name);
+        return done(null, hospital,req.flash("success", "Successfully Logged In! Welcome " + req.body.username));
     });
-});
-}
+}));
+
+//Facebook-Login
+
+passport.use(new FacebookStrategy({
+    clientID        : configAuth.facebookAuth.clientID,
+    clientSecret    : configAuth.facebookAuth.clientSecret,
+    callbackURL     : configAuth.facebookAuth.callbackURL
+    
+    },function(token, refreshToken, profile, done) {
+        process.nextTick(function() {
+        donor.findOne({ 'facebook.id' : profile.id }, function(err, user) {
+            if (err)
+                return done(err);
+            if (user) {
+                return done(null, user); 
+            } else {
+                var newUser            = new donor();
+                newUser.facebook.id    = profile.id;                   
+                newUser.facebook.token = token; 
+                newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName; 
+                if(profile.emails === undefined)
+                    console.log("It is undefined");
+                else
+                {
+                   console.log("Hi....");
+                   console.log(typeof(undefined));
+                   console.log(typeof(profile.emails));
+
+                   newUser.facebook.email = profile.emails[0].value;
+                } 
+                newUser.save(function(err) {
+                    if (err)
+                        throw err;
+                    return done(null, newUser);
+                });
+            }
+    
+        });
+    });
+    
+}));
+    
+};
+    
+

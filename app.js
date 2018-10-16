@@ -9,13 +9,16 @@ var express               = require('express'),
     session               = require('express-session'),
     flash                 = require('connect-flash'),
     donor                 = require('./models/donor.js'),
+    hospital              = require('./models/hospital.js'),
     middleware            = require('./middleware/index');
     require('./config/passport')(passport);
 
 //Requiring routes
 var authRoutes    = require("./routes/auth"),
     editRoutes    = require("./routes/edit"),
-    searchRoutes  = require("./routes/search");
+    searchRoutes  = require("./routes/search"),
+    searchHospRoutes  = require("./routes/searchHospital"),
+    editHospRoutes= require("./routes/editHospital");
  
 //Connecting database
 mongoose.connect('mongodb://bloob_buddy:blood123@ds223653.mlab.com:23653/blood_buddy', {useNewUrlParser: true});
@@ -47,6 +50,8 @@ app.use(function(req, res, next){
 app.use("/auth", authRoutes);
 app.use("/search", searchRoutes);
 app.use("/edit", editRoutes);
+app.use("/searchHospital", searchHospRoutes);
+app.use("/editHospital", editHospRoutes);
 
 //ROUTES
 app.get('/',function(req,res){
@@ -59,6 +64,13 @@ app.get('/home',function(req,res){
 
 app.get('/profile',middleware.isLoggedIn,function(req,res){
     res.render('profile',{donor : req.user});
+});
+app.get('/profileFacebook',function(req,res){
+    res.render('profileFacebook',{donor : req.user});
+});
+app.get('/profileHospital',middleware.isLoggedIn,function(req,res){
+    console.log("hosp login");
+    res.render('profileHospital',{hospital : req.user});
 });
 app.post("/home/usernameTest",function(req,res){
     var query= donor.findOne({"local.username":req.body.username});

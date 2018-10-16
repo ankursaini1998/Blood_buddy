@@ -24,6 +24,12 @@
             <li class="nav-item nav justify-content-end">
               <a class="nav-link" href="/auth/register">Register as Donor</a>
             </li>
+            <li class="nav-item nav justify-content-end">
+              <a class="nav-link" href="/auth/loginHospital">Login As Hospital</a>
+            </li>
+            <li class="nav-item nav justify-content-end">
+              <a class="nav-link" href="/auth/registerHospital">Register as Hospital</a>
+            </li>
             <% } else { %>
             <li class="nav-item nav justify-content-end">
               <a class="nav-link" href="/profile">Signed In As <%= currentUser.local.username %></a>
@@ -42,4 +48,7 @@
       <% if(success && success.length > 0) { %>
         <div class="alert alert-success alert-dismissible fade show"><button type="button" class="close" data-dismiss="alert">&times;</button><p><%= success %></p></div>
       <% } %>
+
+    <!-- <a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a> -->
+      
    
