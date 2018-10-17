@@ -5,13 +5,13 @@ $(document).ready(function(){
         console.log(username);
 
       if(username!=null)
-      $.post( "/home/usernameTest", { username: username }, function( data ) {
-         // console.log("hello");
+      $.post( "/home/hospitalUsernameTest", { username: username }, function( data ) {
+         // console.log("good hello");
        if(username==data.username)
        {
        alert("user alredy exists");
        $( "#username" ).val("");
-       } 
+       } else alert("pkdfkmrelkv");
      
        }, "json");
     });
@@ -34,7 +34,7 @@ $(document).ready(function(){
 
             var email=$( "#email" ).val();
             if(email!=null)
-            $.post( "/home/emailTest", { email: email }, function( data ) {
+            $.post( "/home/hospitalEmailTest", { email: email }, function( data ) {
              if(email==data.email)
              {
              alert("email alredy rgistered");

@@ -17,7 +17,7 @@ var donorSchema = mongoose.Schema({
         },
         name : String,
         email : String,
-        confirmPassword : String,
+       // confirmPassword : String,
         dob : Date,
         gender : String,
         bloodGroup : String,

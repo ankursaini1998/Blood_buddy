@@ -72,6 +72,9 @@ app.get('/profileHospital',middleware.isLoggedIn,function(req,res){
     console.log("hosp login");
     res.render('profileHospital',{hospital : req.user});
 });
+
+
+
 app.post("/home/usernameTest",function(req,res){
     var query= donor.findOne({"local.username":req.body.username});
  query.select("local.username");
@@ -94,6 +97,32 @@ query.exec(function (err, person) {
  else res.send({"email":person.email});
 });
 });
+
+
+app.post("/home/hospitalUsernameTest",function(req,res){
+    var query= hospital.findOne({"local.username":req.body.username});
+    console.log(req.body.username);
+ query.select("local.username");
+ query.exec(function (err, person) {
+   if (err) return handleError(err);     
+   if(person ==null)
+   res.send({"username":"-1"});
+   else res.send({"username":person.local.username});
+});
+});
+
+
+app.post("/home/hospitalEmailTest",function(req,res){
+  var query= hospital.findOne({"email":req.body.email});
+query.select("email");
+query.exec(function (err, person) {
+ if (err) return handleError(err);     
+ if(person ==null)
+ res.send({"email":"-1"});
+ else res.send({"email":person.email});
+});
+});
+
 
 
 app.listen('8080',function(){
