@@ -1,0 +1,18 @@
+<% include partials/header %>
+<div class="container">
+	<h1>Donor list</h1>
+    <div class="row">
+
+        <ul>
+            <%donors.forEach(function(donor){%>
+                <li><div >
+                    <h1><%=donor.name%> </h1>
+                    <h4><%= donor.userType %></h4>
+                     Contact :    <%= donor.contactNumber%>
+                 </div></li>
+
+                <%});%>
+        </ul>
+    </div>
+
+<% include partials/footer %>
